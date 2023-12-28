@@ -20,8 +20,6 @@ body {
 
 .board {
   display: flex;
-  flex-wrap: wrap;
-  width: calc(2.1875rem * 3);
 }
 
 .game {
