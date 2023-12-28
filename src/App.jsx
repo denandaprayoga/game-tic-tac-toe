@@ -58,6 +58,8 @@ function Board({ xIsNext, squares, onPlay }) {
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
+  const [ascending, setAscending] = useState(true);
+  const displayAscending = ascending ? 'Ascending' : 'Descending';
   const xIsNext = currentMove % 2 === 0;
   const currentSquare = history[currentMove];
 
@@ -90,13 +92,18 @@ export default function Game() {
     );
   });
 
+  function toogleButtonAscending() {
+    setAscending(!ascending);
+  }
+
   return (
     <div className='game'>
       <div className='game-board'>
         <Board xIsNext={xIsNext} squares={currentSquare} onPlay={handlePlay} />
       </div>
       <div className='game-info'>
-        <ol>{moves}</ol>
+        <button onClick={toogleButtonAscending}>{displayAscending}</button>
+        <ol>{ascending ? moves : moves.reverse()}</ol>
       </div>
     </div>
   );
