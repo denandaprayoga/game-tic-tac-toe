@@ -1,0 +1,29 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  margin: 1.25rem;
+  padding: 0;
+}
+
+.square {
+  width: 2.1875rem;
+  height: 2.1875rem;
+  cursor: pointer;
+  border: 0.0625rem solid black;
+  background-color: white;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  width: calc(2.1875rem * 3);
+}
+
+.game {
+  display: flex;
+}
