@@ -1,15 +1,16 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
 
-function Square({ value, onSquareClick }) {
+function Square({ value, onSquareClick, classname }) {
   return (
-    <button className='square' onClick={onSquareClick}>
+    <button className={classname} onClick={onSquareClick}>
       {value}
     </button>
   );
 }
 
 function Board({ xIsNext, squares, onPlay }) {
+  const winner = calculateWinner(squares);
   const lengthBoard = 3;
   const rows = [...Array(lengthBoard).keys()].map((row) => {
     const columns = [...Array(lengthBoard).keys()].map((col) => {
@@ -19,6 +20,7 @@ function Board({ xIsNext, squares, onPlay }) {
           key={i}
           value={squares[i]}
           onSquareClick={() => handleClick(i)}
+          classname={linesWinner(i)}
         />
       );
     });
@@ -39,12 +41,24 @@ function Board({ xIsNext, squares, onPlay }) {
     onPlay(nextSquares);
   }
 
-  const winner = calculateWinner(squares);
   let status;
   if (winner) {
-    status = 'Pemenangnya adalah ' + winner;
+    status = 'Pemenangnya adalah ' + winner.winner;
   } else {
-    status = 'Pemain selanjutnya ' + (xIsNext ? 'X' : 'O');
+    !squares.includes(null)
+      ? (status = 'pertandingan seri')
+      : (status = 'Pemain selanjutnya ' + (xIsNext ? 'X' : 'O'));
+  }
+
+  function linesWinner(indexSquare) {
+    if (winner !== null) {
+      for (let i = 0; i < winner.lines.length; i++) {
+        if (winner.lines[i] === indexSquare) {
+          return 'square square-winner';
+        }
+      }
+    }
+    return 'square';
   }
 
   return (
@@ -59,9 +73,9 @@ export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
   const [ascending, setAscending] = useState(true);
-  const displayAscending = ascending ? 'Ascending' : 'Descending';
   const xIsNext = currentMove % 2 === 0;
   const currentSquare = history[currentMove];
+  const displayAscending = ascending ? 'Ascending' : 'Descending';
 
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -86,7 +100,9 @@ export default function Game() {
         {move === currentMove ? (
           <>Anda berada di langkah ke #{move}</>
         ) : (
-          <button onClick={() => jumpTo(move)}>{description}</button>
+          <button className='button' onClick={() => jumpTo(move)}>
+            {description}
+          </button>
         )}
       </li>
     );
@@ -102,7 +118,9 @@ export default function Game() {
         <Board xIsNext={xIsNext} squares={currentSquare} onPlay={handlePlay} />
       </div>
       <div className='game-info'>
-        <button onClick={toogleButtonAscending}>{displayAscending}</button>
+        <button className='button' onClick={toogleButtonAscending}>
+          {displayAscending}
+        </button>
         <ol>{ascending ? moves : moves.reverse()}</ol>
       </div>
     </div>
@@ -124,10 +142,13 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
 
-    if (squares[a] === squares[b] && squares[b] === squares[c]) {
-      return squares[a];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      const winner = {
+        winner: squares[a],
+        lines: lines[i],
+      };
+      return winner;
     }
   }
-
   return null;
 }
