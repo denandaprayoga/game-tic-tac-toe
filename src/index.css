@@ -39,6 +39,10 @@ body {
   padding: 1.25rem;
 }
 
+.status {
+  font-size: 2rem;
+}
+
 .button {
   padding: 0.625rem 0.75rem;
   margin-bottom: 0.25rem;
